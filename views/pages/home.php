@@ -39,10 +39,10 @@
 						<h2>Sign in</h2>
 						<div>
 							<label>Username</label>
-							<input id="Username" name="username" type="text" />
+							<input id="Username" name="username" type="text" style="width:80%" />
 
 							<label>Password</label>
-							<input id="Password" name="password" type="password" />
+							<input id="Password" name="password" type="password" style="width:80%" />
 							<!--
 							<label class="checkbox inline">
 								<input type="checkbox" id="RememberMe" name="rememberme" value="option1"> Remember me
@@ -59,7 +59,30 @@
 			</div>
 
 			<div class="span9" style="overflow-y: scroll">
-				<p>Items in here</p>
+				<ul class="thumbnails">
+					<?php //Fix the form action
+						foreach ($items as $item) {
+							echo <<<ITEMHTML
+							<li class='span3'>
+								<div class='thumbnail'>
+									<img src='itemimage.jpg' >
+									<div class='caption'>
+										<h4>$item->name</h4>
+										<p>$item->price</p>
+										<form method='POST' action='?/controller=cart&action=add($item)'>
+											<input type='hidden' name='product_id' value=$item->id />
+											<input type='hidden' name='product_name' value=$item->name />
+											<input type='hidden' name='product_price' value=$item->price />
+											<input type='hidden' name='type' value='add_product' />
+											<button class='btn btn-success'>Add to Cart</button>
+										</form>
+									</div>
+								</div>
+							</li>
+ITEMHTML;
+						}
+					?>
+				</ul>
 			</div>
 
 		</div>

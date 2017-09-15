@@ -22,6 +22,18 @@
 						<a class="brand" href="/ToggleHack/index.php">ToggleHack</a>
 						<div class="searchfield">
 							<!-- Add searchfield on some views -->
+							<button class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse" type="button">
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<div class="nav-collapse collapse">
+
+								<form class="navbar-form form-search pull-right" method="post" action="index.php">
+									<input id="Search" name="searchphrase" type="text" class="input-medium search-query">
+									<button type="submit" class="btn">Search</button>
+								</form>
+							</div>
 						</div>
 
 					</div>

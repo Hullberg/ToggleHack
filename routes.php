@@ -2,10 +2,13 @@
 function call($controller, $action) {
 	// Get the name of the controller
 	require_once('controllers/' . $controller . '_controller.php');
+	
+
 
 	// New instance
 	switch($controller) {
 		case 'pages':
+			require_once('models/item.php');
 			$controller = new PagesController();
 		// Can add more controllers below	
 		break;

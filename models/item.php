@@ -16,9 +16,9 @@ class Item {
 	public static function all() {
 		$list = [];
 		$db = Db::getInstance();
-		//$req = $db->query('SELECT * FROM items');
-		$stmt = "SELECT * from items";
-		foreach($db->query($stmt) as $item) {
+		$req = $db->query('SELECT * FROM items');
+		
+		foreach($req->fetchAll() as $item) {
 			$list[] = new Item($item['id'], $item['name'], $item['imgurl'], $item['price']);
 		}
 		
