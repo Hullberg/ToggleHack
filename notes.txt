@@ -3,3 +3,11 @@
 action/href/whatever '?controller=x & action=y & attribute=z'
 
 can echo out attribute
+
+
+onClick="javascipt:window.location.href='<?php echo $this->Html->url(array('controller'=>'controller','action'=>'action')) ?>'"
+
+
+
+
+<input type='button' title='Add to Cart' onClick='javascript:window:location.href=?<?php echo $this->Html->url(array('controller'='cart','action'='add','item'=$item)); ?>'>

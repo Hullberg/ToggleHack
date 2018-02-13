@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		
@@ -11,8 +11,10 @@
 		<script src="./js/jquery-1.10.0.min.js"></script>
 		<script src="./js/bootstrap/js/bootstrap.min.js"></script>
 		<script src="./js/holder.js"></script>
-
+                <script src="./js/cookies.js"></script>
+		
 		<title>ToggleHack</title>
+                
 	</head>
 	<body>
 		<header>
@@ -29,8 +31,8 @@
 							</button>
 							<div class="nav-collapse collapse">
 
-								<form class="navbar-form form-search pull-right" method="post" action="index.php">
-									<input id="Search" name="searchphrase" type="text" class="input-medium search-query">
+								<form class="navbar-form form-search pull-right" method="POST" action="?controller=pages&action=search">
+									<input id="Search" name="Search" type="text" class="input-medium search-query">
 									<button type="submit" class="btn">Search</button>
 								</form>
 							</div>

@@ -2,16 +2,24 @@
 function call($controller, $action) {
 	// Get the name of the controller
 	require_once('controllers/' . $controller . '_controller.php');
+	require_once('models/item.php');
 	
+	//require_once('models/cart_items.php');
 
-
-	// New instance
+	// New controller
 	switch($controller) {
 		case 'pages':
-			require_once('models/item.php');
 			$controller = new PagesController();
-		// Can add more controllers below	
-		break;
+			break;
+		case 'cart':
+			$controller = new CartController();
+			break;
+		case 'users':
+			$controller = new UsersController();
+			break;
+		default:
+			$controller = new PagesController();
+		
 	}
 
 	// Call action in controller
@@ -19,7 +27,9 @@ function call($controller, $action) {
 }
 
 // Add the controllers with their actions
-$controllers = array('pages' => ['home', 'error']);
+$controllers = array('pages' => array('home', 'error', 'search', 'register'),
+                    'cart' => array('add', 'remove', 'clearCart', 'checkout'),
+                    'users' => array('register', 'login', 'logout'));
 
 // Get the controller->action pair
 if (array_key_exists($controller, $controllers)) {

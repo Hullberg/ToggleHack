@@ -40,14 +40,14 @@ class Item {
 		$db = Db::getInstance();
 		$list = [];
 		// SQL Unsafe
-		$req = $db->prepare('SELECT * FROM items WHERE name LIKE :name');
-		$req->execute(array('name' => $name));
+		$req = $db->prepare('SELECT * FROM items WHERE name LIKE :itemname');
+		$req->execute(array('itemname' => "%" . $itemname . "%"));
 
 		foreach($req->fetchAll() as $item) {
 			$list[] = new Item($item['id'], $item['name'], $item['img'], $item['price']);
-
-			return $list;
 		}
+		
+		return $list;
 	}
 }
 
