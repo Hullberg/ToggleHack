@@ -3,14 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Applications/MAMP/htdocs/ToggleHack/routes.php</file>
+            <file>file:/Applications/MAMP/htdocs/ToggleHack/db.sql</file>
             <file>file:/Applications/MAMP/htdocs/ToggleHack/controllers/pages_controller.php</file>
             <file>file:/Applications/MAMP/htdocs/ToggleHack/views/pages/home.php</file>
-            <file>file:/Applications/MAMP/htdocs/ToggleHack/views/layout.php</file>
+            <file>file:/Applications/MAMP/htdocs/ToggleHack/models/itemcomment.php</file>
             <file>file:/Applications/MAMP/htdocs/ToggleHack/controllers/users_controller.php</file>
-            <file>file:/Applications/MAMP/htdocs/ToggleHack/js/cookies.js</file>
             <file>file:/Applications/MAMP/htdocs/ToggleHack/controllers/cart_controller.php</file>
             <file>file:/Applications/MAMP/htdocs/ToggleHack/models/item.php</file>
+            <file>file:/Applications/MAMP/htdocs/ToggleHack/views/pages/itempage.php</file>
         </group>
     </open-files>
 </project-private>

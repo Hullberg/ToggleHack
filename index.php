@@ -1,5 +1,16 @@
 <?php
 if ( ! session_id() ) @ session_start();
+// Initiate the toggle-buttons.
+if (!isset($_SESSION['sql'])) {
+    $_SESSION['sql'] = 'OFF';
+}
+if (!isset($_SESSION['xss'])) {
+    $_SESSION['xss'] = 'OFF';
+}
+if (!isset($_SESSION['cookies'])) {
+    $_SESSION['cookies'] = 'OFF';
+}
+
 
 require_once('connection.php');
 

@@ -3,6 +3,7 @@ function call($controller, $action) {
 	// Get the name of the controller
 	require_once('controllers/' . $controller . '_controller.php');
 	require_once('models/item.php');
+        require_once('models/itemcomment.php');
 	
 	//require_once('models/cart_items.php');
 
@@ -27,7 +28,7 @@ function call($controller, $action) {
 }
 
 // Add the controllers with their actions
-$controllers = array('pages' => array('home', 'error', 'search', 'register'),
+$controllers = array('pages' => array('home', 'error', 'search', 'register', 'itempage', 'addcomment'),
                     'cart' => array('add', 'remove', 'clearCart', 'checkout'),
                     'users' => array('register', 'login', 'logout'));
 

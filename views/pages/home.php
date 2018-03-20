@@ -5,8 +5,13 @@
 			<div class="span3">
 
 				<div class="well">
-					Measures
+                                    Measures <br>
 					<!-- Will add toggle-buttons and info here -->
+                                        <?php 
+                                        echo $_SESSION['sql'] . '<br>';
+                                        echo $_SESSION['xss'] . '<br>';
+                                        echo $_SESSION['cookies'] . '<br>';
+                                        ?>
 				</div>
                             <?php 
                             // TODO: Get the items from the cookie properly
@@ -99,7 +104,7 @@
 								<div class='thumbnail'>
 									<img src='itemimage.jpg' >
 									<div class='caption'>
-										<h4>$item->name</h4>
+										<h4><a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item->id'>$item->name</a></h4>
 										<p>$item->price</p>
 										<form method='POST' action='?controller=cart&action=add'>
 											<input type='hidden' name='product_id' value=$item->id />
