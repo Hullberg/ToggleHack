@@ -25,8 +25,8 @@ bcryptpass VARCHAR(255),
 PRIMARY KEY(username)
 );
 
-INSERT INTO users (username, md5pass, bcryptpass) VALUES ('ADMIN', 'e3274be5c857fb42ab72d786e281b4b8', '$2y$10$VGhpcyFzQVN0cmluZ1QwQO85a87OTivyWwtMZBY45idFrNE6BguL.');
-INSERT INTO users (username, md5pass, bcryptpass) VALUES ('test', '098f6bcd4621d373cade4e832627b4f6', '$2y$10$VGhpcyFzQVN0cmluZ1QwQOISBc6ojqyBA61b/bIdj4gbMADzuuIsW');
+INSERT INTO users (username, md5pass, bcryptpass) VALUES ("ADMIN", "e3274be5c857fb42ab72d786e281b4b8", "$2y$10$VGhpcyFzQVN0cmluZ1QwQO85a87OTivyWwtMZBY45idFrNE6BguL.");
+INSERT INTO users (username, md5pass, bcryptpass) VALUES ("test", "098f6bcd4621d373cade4e832627b4f6", "$2y$10$VGhpcyFzQVN0cmluZ1QwQOISBc6ojqyBA61b/bIdj4gbMADzuuIsW");
 
 CREATE TABLE itemcomments (
 id INT NOT NULL AUTO_INCREMENT,

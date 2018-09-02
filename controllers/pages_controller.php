@@ -133,11 +133,11 @@ class PagesController {
             $db->query("CREATE TABLE users (
                         username VARCHAR(255) NOT NULL,
                         md5pass VARCHAR(255),
-                        sha512pass VARCHAR(255),
+                        bcryptpass VARCHAR(255),
                         PRIMARY KEY(username)
                         )");
-            $db->query("INSERT INTO users (username, md5pass, sha512pass) VALUES ('ADMIN', '83926d05c82cc4b77fa3d4cde227461d', 'B1BBD962FDAEE576261A2F58B0337480256489A11B4E0C7FD09846F18869CF4B3C844B04F7AF2E8681403F11C9D695C9185DE6DA06E5C627FB42CDE2A5097920')");
-            $db->query("INSERT INTO users (username, md5pass, sha512pass) VALUES ('test', '098f6bcd4621d373cade4e832627b4f6', 'EE26B0DD4AF7E749AA1A8EE3C10AE9923F618980772E473F8819A5D4940E0DB27AC185F8A0E1D5F84F88BC887FD67B143732C304CC5FA9AD8E6F57F50028A8FF')");
+            $db->query('INSERT INTO users (username, md5pass, bcryptpass) VALUES ("ADMIN", "e3274be5c857fb42ab72d786e281b4b8", "$2y$10$VGhpcyFzQVN0cmluZ1QwQO85a87OTivyWwtMZBY45idFrNE6BguL.")');
+            $db->query('INSERT INTO users (username, md5pass, bcryptpass) VALUES ("test", "098f6bcd4621d373cade4e832627b4f6", "$2y$10$VGhpcyFzQVN0cmluZ1QwQOISBc6ojqyBA61b/bIdj4gbMADzuuIsW")');
             
             $db->query("CREATE TABLE itemcomments (
                         id INT NOT NULL AUTO_INCREMENT,
