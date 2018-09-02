@@ -40,7 +40,7 @@ class UsersController {
                                     // If the execute returned true it worked
                                     $URL = "/ToggleHack/index.php";
                                     echo "<script type='text/javascript'>";
-                                    echo "setCookie('username', " . $username . ");";
+                                    echo "setCookie('username', '" . $username . "');";
                                     echo "document.location.href='{$URL}';</script>";
                                     echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
                                 }
