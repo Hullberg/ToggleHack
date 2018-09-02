@@ -16,11 +16,10 @@ class UsersController {
 			$temppassword = htmlspecialchars($_POST['registerpassword']);
                         
                         // All lowercase to check if equal strings.
-                        $username = strtolower($tempuser);
-                        $password = strtolower($temppassword);
+                        $username = $tempuser;
+                        $password = $temppassword;
 			
 			$db = Db::getInstance();
-                        // Allow SQL injection here
 			$req = $db->prepare('SELECT COUNT(*) as count FROM users WHERE username = :username');
 			$req->execute(array(':username' => $username));
 			$amt = $req->fetch();
@@ -34,16 +33,7 @@ class UsersController {
 				$pass1 = md5($password);
 				$salt = "This!sAStringT0AddSaltToTh3_Password";
 				$pass2 = hash("sha512", $salt . $password);
-
-                                // Here we can prevent SQL injection
-                                /*$sql = "INSERT INTO users(username, md5pass, sha512pass) VALUES(".$username.",".$pass1.",".$pass2.")";
-                                if ($db->query($sql) === TRUE) {
-                                    setcookie('username', $username, time()+3600);
-                                    call('pages','home');
-                                }
-                                else {
-                                    call('pages','error');
-                                }*/
+                                // Don't want SQL injections in register.
 				$insertion = $db->prepare('INSERT INTO users(username,md5pass,sha512pass) VALUES(:username, :pass1, :pass2)');
                                 if($insertion->execute(array(':username' => $username, ':pass1' => $pass1, ':pass2' => $pass2))) {
                                     // If the execute returned true it worked
@@ -62,31 +52,54 @@ class UsersController {
 	}
 
         public function login() {
-            $username = strtolower(htmlspecialchars($_POST['loginusername']));
-            $password = strtolower(htmlspecialchars($_POST['loginpassword']));
+            $username = $_POST['loginusername'];
+            $password = $_POST['loginpassword'];
             $pass1 = md5($password);
             $salt = "This!sAStringT0AddSaltToTh3_Password";
             $pass2 = hash("sha512", $salt . $password);
-            
             $db = Db::getInstance();
-            //$sql = "SELECT * FROM users WHERE username = :username AND md5pass = :pass1 AND sha512pass = :pass2";
-            $login = $db->prepare("SELECT COUNT(*) as count FROM users WHERE username = :username AND md5pass = :pass1 AND sha512pass = :pass2");
-            $login->execute(array(":username" => $username, ":pass1" => $pass1, ":pass2" => $pass2));
-            $response = $login->fetch();
-            //var_dump($response);
-            if (intval($response["count"]) == 1) {
+            $sqlsuccess = false;
+            $sqllist = "This is what your query retrieved:\\n";
+            
+            if ($_SESSION['sql'] == 'ON') {
+                $login = $db->prepare("SELECT COUNT(*) as count FROM users WHERE username = :username AND md5pass = :pass1 AND sha512pass = :pass2");
+                $login->execute(array(":username" => htmlspecialchars($username), ":pass1" => $pass1, ":pass2" => $pass2));
+                $response = $login->fetch();
+                $uname = $response['username'];
+            } else {
+                //$test = "' or '1'='1' -- ";
+                $sql = "SELECT * FROM users WHERE username = '$username' AND md5pass = '$pass1' AND sha512pass = '$pass2'";
+                $response = $db->query($sql)->fetchAll();
+                if (count($response) > 1) {
+                    // SQL injection succeeded.
+                    $sqlsuccess = true;
+                    foreach ($response as $row) {
+                        $sqllist .= "Username: " . $row['username'] . ", md5pass: " . $row['md5pass'] . ", sha512pass: " . $row['sha512pass'] . "\\n";
+                    }
+                }
+                else {
+                    $uname = $response[0]['username'];
+                }
+            }
+            
+            if ($uname == $username) {
                 // Username and passwords match
                 // We have previous output, so we use javascript to create cookie.
                 $URL = "/ToggleHack/index.php";
                 echo "<script type='text/javascript'>";
-                echo "setCookie('username'," . $username . ");";
+                echo "setCookie('username','" . $uname . "');";
                 echo "document.location.href='{$URL}';</script>";
                 echo '<META HTTP-EQUIV="refresh" content="0;URL=' . $URL . '">';
                 
             }
             else {
-                // Couldn't find user or wrongly typed
-                echo "Wrong username or password";
+                if ($sqlsuccess) {
+                    echo "<script type='text/javascript'>alert('".$sqllist."');</script>";
+                }
+                else {
+                    // Couldn't find user or wrongly typed
+                    echo "<script type='text/javascript'>alert('Wrong username or password');</script>";
+                }
                 call('pages','home');
             }
                         
@@ -94,8 +107,13 @@ class UsersController {
         
         public function logout() {
             $URL = "index.php";
-            echo "<script type='text/javascript'>";
-            echo "deleteCookie('username');";
+            if($_SESSION['cookies'] == 'ON') {
+                unset($_SESSION['username']);
+            }
+            else {
+                echo "<script type='text/javascript'>";
+                echo "deleteCookie('username');";
+            }
             echo "document.location.href='{$URL}';</script>";
             echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
         }

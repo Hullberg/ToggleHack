@@ -59,5 +59,94 @@ class PagesController {
 		// No variables, just error
 		require_once('views/pages/error.php');
 	}
+        
+        public function toggle_sql() {
+            if ($_SESSION['sql'] == 'OFF') {
+                $_SESSION['sql'] = 'ON';
+            }
+            else {
+                $_SESSION['sql'] = 'OFF';
+            }
+            call('pages','home');
+        }
+        
+        public function toggle_xss() {
+            if ($_SESSION['xss'] == 'OFF') {
+                $_SESSION['xss'] = 'ON';
+            }
+            else {
+                $_SESSION['xss'] = 'OFF';
+            }
+            call('pages','home');
+        }
+        
+        public function toggle_cookies() {
+            if ($_SESSION['cookies'] == 'OFF') {
+                $_SESSION['cookies'] = 'ON';
+                // Remove js-cookies and make them $_SESSION.
+                // Cart-array and username
+                $_SESSION['username'] = $_COOKIE['username'];
+                echo "<script type='text/javascript'>deleteCookie('username');</script>";
+                $_SESSION['cart_array'] = $_COOKIE['cart_array'];
+                echo "<script type='text/javascript'>deleteCookie('cart_array');</script>";
+                
+                $URL = "/ToggleHack/index.php";
+                echo "<script>document.location.href='{$URL}';</script>";
+                echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
+            }
+            else {
+                $_SESSION['cookies'] = 'OFF';
+                // Remove $_SESSION-cookies and make them js-cookies.
+                echo "<script type='text/javascript'>setCookie('username','".$_SESSION['username']."')</script>";
+                unset($_SESSION['username']);
+                echo "<script type='text/javascript'>setCookie('cart_array','".$_SESSION['cart_array']."')</script>";
+                unset($_SESSION['cart_array']);
+                
+                $URL = "/ToggleHack/index.php";
+                echo "<script>document.location.href='{$URL}';</script>";
+                echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
+            }
+            call('pages','home');
+        }
+        
+        public function reset_site() {
+            // Resets database to 'factory-settings'
+            $db = Db::getInstance();
+            $db->query('DROP TABLE items');
+            $db->query('DROP TABLE itemcomments');
+            $db->query('DROP TABLE users');
+            
+            $db->query('CREATE TABLE items (
+                        id INT NOT NULL AUTO_INCREMENT,
+                        name VARCHAR(255) NOT NULL,
+                        price DECIMAL(5,2) NOT NULL,
+                        description LONGTEXT NOT NULL,
+                        PRIMARY KEY(id)
+                        )');
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item0', 800.00, 'Imagine a black t-shirt')");
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item1', 400.00, 'Imagine a nice golden watch')");
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item2', 200.00, 'Imagine a smartphone')");
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item3', 100.00, 'Imagine a laptop')");
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item4', 50.00, 'Imagine some kitchen utensil')");
+            $db->query("INSERT INTO items (name, price, description) VALUES ('item5', 25.00, 'Imagine some weight-lifting equipment')");
+            
+            $db->query("CREATE TABLE users (
+                        username VARCHAR(255) NOT NULL,
+                        md5pass VARCHAR(255),
+                        sha512pass VARCHAR(255),
+                        PRIMARY KEY(username)
+                        )");
+            $db->query("INSERT INTO users (username, md5pass, sha512pass) VALUES ('ADMIN', '83926d05c82cc4b77fa3d4cde227461d', 'B1BBD962FDAEE576261A2F58B0337480256489A11B4E0C7FD09846F18869CF4B3C844B04F7AF2E8681403F11C9D695C9185DE6DA06E5C627FB42CDE2A5097920')");
+            $db->query("INSERT INTO users (username, md5pass, sha512pass) VALUES ('test', '098f6bcd4621d373cade4e832627b4f6', 'EE26B0DD4AF7E749AA1A8EE3C10AE9923F618980772E473F8819A5D4940E0DB27AC185F8A0E1D5F84F88BC887FD67B143732C304CC5FA9AD8E6F57F50028A8FF')");
+            
+            $db->query("CREATE TABLE itemcomments (
+                        id INT NOT NULL AUTO_INCREMENT,
+                        product_id INT NOT NULL,
+                        comment LONGTEXT NOT NULL,
+                        PRIMARY KEY(id)
+                        )");
+            $db->query("INSERT INTO itemcomments (product_id, comment) VALUES ('1','good product')");
+            call('pages','home');
+        }
 }
 ?>

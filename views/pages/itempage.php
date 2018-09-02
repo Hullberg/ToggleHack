@@ -14,7 +14,7 @@
 				</div>
                             </div>
                         </div>
-                    <div class="span9" style="overflow-y: scroll; height: 75%">
+                    <div class="span9" style="overflow-y: scroll; height: 76%">
                         <?php
                             if ($comments == NULL) {
                                 echo "Currently no comments for this item";
@@ -22,18 +22,19 @@
                             else {
                                 foreach($comments as $itemcomment) {
                                     if($_SESSION['xss'] == 'ON') {
+                                        // Here the XSS-prevention will handle the content of the comment
                                         $comment = htmlspecialchars($itemcomment->comment);
                                     }
                                     else {
                                         $comment = $itemcomment->comment;
                                     }
-                                    // Here the XSS-prevention will handle the content of the comment
+                                    
                                     echo "<div class='well'>$comment</div>";
                                 }
                             }
                         ?>
                     </div>
-                    <div class="span12">
+                    <div class="span12" style="height:25%">
                         <div class="well">
                             <form method="POST" action="?controller=pages&action=addcomment">
                                 <input type="text" name="itemcomment" placeholder="Add your comment here" style="width:99%"><br>

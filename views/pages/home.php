@@ -5,57 +5,94 @@
 			<div class="span3">
 
 				<div class="well">
-                                    Measures <br>
+                                    <h4>Protective measures</h4>
 					<!-- Will add toggle-buttons and info here -->
-                                        <?php 
-                                        echo $_SESSION['sql'] . '<br>';
-                                        echo $_SESSION['xss'] . '<br>';
-                                        echo $_SESSION['cookies'] . '<br>';
-                                        ?>
+                                        <form method="POST" action="?controller=pages&action=toggle_sql">
+                                            <label style='float:left'>SQL Injection</label>
+                                            <div style='margin-left: 1em' class="dropdown">
+						  <img src="https://image.flaticon.com/icons/png/512/8/8235.png" style="width:10px;height:10px">
+						  <div class="dropdown-content">
+                                                      <p>When an attacker exploits the connection to the database, and attempts to alter the queries. <a href="https://www.veracode.com/security/sql-injection">Explanation</a></p>
+						  </div>
+                                            </div>
+                                            <input style='float:right' class='btn btn-success' type="submit" value="<?php echo $_SESSION['sql']; ?>"/>
+                                        </form>
+                                        <form method="POST" action="?controller=pages&action=toggle_xss">
+                                            <label style='float:left'>Cross-Site Scripting</label>
+                                            <div style='margin-left: 1em' class="dropdown">
+						  <img src="https://image.flaticon.com/icons/png/512/8/8235.png" style="width:10px;height:10px">
+						  <div class="dropdown-content">
+                                                      <p>When an attacker attempts to alter the code, possibly adding persistent attacks to affect others using the site. <a href="https://www.veracode.com/security/cross-site-scripting-prevention">Explanation</a></p>
+						  </div>
+                                            </div>
+                                            <input style='float:right' class='btn btn-success' type="submit" value="<?php echo $_SESSION['xss']; ?>">
+                                        </form>
+                                        <form method="POST" action="?controller=pages&action=toggle_cookies">
+                                            <label style='float:left'>Cookie Manipulation</label>
+                                            <div style='margin-left: 1em' class="dropdown">
+						  <img src="https://image.flaticon.com/icons/png/512/8/8235.png" style="width:10px;height:10px">
+						  <div class="dropdown-content">
+                                                      <p>When an attacker exploits the site's cookies for various reasons. Specifically Cookie poisoning in this case. <a href="http://www.infosectoday.com/Articles/Cookie_Tampering.htm">Explanation</a></p>
+						  </div>
+                                            </div>
+                                            <input style='float:right' class='btn btn-success' type="submit" value="<?php echo $_SESSION['cookies']; ?>">
+                                        </form>
 				</div>
-                            <?php 
-                            // TODO: Get the items from the cookie properly
-                            /*if (isset($_COOKIE['cart_array'])) {
-                                $cart_array = explode(",",($_COOKIE['cart_array']));
-                                $temparray = [];
-                                for($i = 0; $i <= count($cart_array); $i+=4) {
-                                    $new_item = array('product_id' => $cart_array[$i], 'product_name' => $cart_array[$i+1], 'product_price' => $cart_array[$i+2], 'product_amount' => $cart_array[$i+3]);
-                                    $temparray.push($new_item);
-                                }
-                            }*/
-                            if(isset($_COOKIE['cart_array'])) {
-                                echo $_COOKIE['cart_array'];
-                            }
                             
-                            ?>
 
 				<div class="well">
 					<div class="dropdown">
 						<a class="dropdown-toggle" data-toggle="dropdown" href="#">
 							<i class="icon-shopping-cart"></i>
 							<!-- Add total sum here -->
+                                                        <?php
+                                                        if($_SESSION['cookies'] == 'ON') {
+                                                            $c_temp = $_SESSION['cart_array'];
+                                                        }
+                                                        else {
+                                                            $c_temp = $_COOKIE['cart_array'];
+                                                        }
+                                                        if(isset($c_temp)) {
+                                                            $cart_array = unserialize(base64_decode($c_temp));
+                                                            $tot_sum = 0;
+                                                            foreach($cart_array as $cart_item) {
+                                                                $tot_sum = $tot_sum + floatval($cart_item['product_price'] * $cart_item['product_amount']);
+                                                            }
+                                                            echo "$" . $tot_sum;
+                                                        }
+                                                        else {
+                                                            echo "$0";
+                                                        }
+							?>
 							<b class="caret"></b>
 						</a>
 						<div class="dropdown-menu well" role="menu" aria-labelledby="dLabel">
 							<!-- Populate cart with items -->
 							<?php
-                                                        // TODO
-							$cart_array = $_COOKIE['cart_array'];
-
-							foreach($cart_array as $cart_item) {
-								echo "<p>".$cart_item->product_id." x ".$cart_item->product_amount." x ".$cart_item->product_price." = ".($cart_item->product_amount*$cart_item->product_price)."</p>";
-							}
+                                                        if($_SESSION['cookies'] == 'ON') {
+                                                            $c_temp = $_SESSION['cart_array'];
+                                                        }
+                                                        else {
+                                                            $c_temp = $_COOKIE['cart_array'];
+                                                        }
+                                                        if(isset($c_temp)) {
+                                                            $cart_array = unserialize(base64_decode($c_temp));
+                                                            foreach($cart_array as $cart_item) {
+                                                                echo "<p style='float:left;display:inline'>" . $cart_item['product_name']." x ".$cart_item['product_amount']." = $".($cart_item['product_price']*$cart_item['product_amount'])."</p>";
+                                                                echo "<form method='POST' action='?controller=cart&action=remove'>";
+                                                                echo "<input type='hidden' name='product_id' value=".$cart_item['product_id']." />";
+                                                                echo "<button style='float:right; display:inline'>x</button></form><br>";
+                                                            }
+                                                        }
 							?>
-
-							<!-- Fix the following-->
-							<form method='post' action='?controller=cart&action=clear' style='display:inline-block;'>
+							<form method='post' action='?controller=cart&action=clearCart' style='display:inline-block;'>
 								<input type='hidden' name='clearcart'></input>
 								<button class='btn btn-success'>Clear Cart</button>
 							</form>
 							<form method='post' action='?controller=cart&action=checkout' style='display:inline-block;margin-left:3em'>
 								<input type='hidden' name='checkoutpurchase' value='".$_SESSION['cart_products']."'></input>
 								<button class='btn btn-success'>Checkout</button>
-							</form>";
+							</form>
 						</div>
 					</div>
 				</div>
@@ -63,8 +100,15 @@
 
 				<div class="well">
 					<?php 
-                                        if (isset($_COOKIE['username'])) {
-                                            echo "<h3>Hello <script>document.write(getCookie('username'));</script></h3>";
+                                        if($_SESSION['cookies'] == 'ON') {
+                                            $c_temp = $_SESSION['username'];
+                                        }
+                                        else {
+                                            $c_temp = $_COOKIE['username'];
+                                        }
+                                        //var_dump($c_temp);
+                                        if (isset($c_temp)) {
+                                            echo "<h3>Hello <script>document.write('$c_temp');</script></h3>";
                                             ?>
                                     <form method="POST" name="logoutform" action="?controller=users&action=logout">
                                         <button type="submit" class="btn btn-success" value="Logout" id="submit">Log out</button>
@@ -93,6 +137,11 @@
                                         <?php } ?>
                                         
 				</div>
+                            <div class='well'>
+                                <form method='POST' action='?controller=pages&action=reset_site'>
+                                    <button class='btn btn-success'>Reset database to 'original' state</button>
+                                </form>
+                            </div>
 			</div>
 
 			<div class="span9" style="overflow-y: scroll">
@@ -102,10 +151,10 @@
 							echo <<<ITEMHTML
 							<li class='span3'>
 								<div class='thumbnail'>
-									<img src='itemimage.jpg' >
+									<a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item->id'><img src='itemimage.jpg' ></a>
 									<div class='caption'>
 										<h4><a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item->id'>$item->name</a></h4>
-										<p>$item->price</p>
+										<p>$ $item->price</p>
 										<form method='POST' action='?controller=cart&action=add'>
 											<input type='hidden' name='product_id' value=$item->id />
 											<input type='hidden' name='product_name' value=$item->name />

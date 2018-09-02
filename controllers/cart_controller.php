@@ -10,86 +10,95 @@ class CartController {
           $cart_array = array(
           array(
           'product_id' => '100',
+          'product_name' => 'item0'
           'product_price' => '25,00',
-          'product_amount' => '2'
+          'product_amount' => 2
           ),...
          */
-
-
-        $cart_array = array();
-        $tempindex = -1;
-        if (isset($_COOKIE['cart_array'])) { // If empty, no items in cart.
-            $cart_array[] = $_COOKIE['cart_array'];
-            //$cart_array = explode(",",$_COOKIE['cart_array']);
-            $length = count($cart_array);
+        
+        if (isset($_COOKIE['cart_array']) || isset($_SESSION['cart_array'])) { // If empty, no items in cart.
+            if ($_SESSION['cookies'] == 'OFF') {
+                $cart_array = unserialize(base64_decode($_COOKIE['cart_array']));
+            }
+            else {
+                $cart_array = unserialize(base64_decode($_SESSION['cart_array']));
+            }
             $tempindex = -1;
-            for ($i = 0; $i <= $length; $i++) {
-                if ($cart_array[$i]['product_id'] == $product_id) {
-                    $tempindex = $product_id;
+            $length = count($cart_array);
+            for ($i = 0; $i < $length; $i++) {
+                if($cart_array[$i]['product_id'] == $product_id) {
+                    $tempindex = $i;
                 }
             }
+            
             if ($tempindex != -1) { // Item in cart, increase amount
-                $cart_array[$tempindex]['product_amount']++;
+                $item = $cart_array[$tempindex];
+                $amt = $item['product_amount'] + 1;
+                $cart_array[$tempindex] = array('product_id' => $item['product_id'], 'product_name' => $item['product_name'], 'product_price' => $item['product_price'], 'product_amount' => $amt);
+                
             } else {
-                $new_item = array('product_id' => $product_id, 'product_name' => $product_name, 'product_price' => $product_price, 'product_amount' => 1);
-                $cart_array[] = $new_item;
+                $cart_array[] = array('product_id' => $product_id, 'product_name' => $product_name, 'product_price' => $product_price, 'product_amount' => 1);
             }
         } else {
-            $new_item = array('product_id' => $product_id, 'product_name' => $product_name, 'product_price' => $product_price, 'product_amount' => 1);
-            $cart_array[] = $new_item;
+            $cart_array[] = array('product_id' => $product_id, 'product_name' => $product_name, 'product_price' => $product_price, 'product_amount' => 1);
         }
-
-        var_dump($cart_array);
-        echo "<br>".serialize($cart_array);
-        // Convert $cart_array to a javascript-array
-        // var cart_array = [];
-        // foreach($cart_array as $item) {convert to js and push to js-var}
-        // id,name,price,amount
-        // var item = [0,'item_0',200.00,1];
+        
+        $cookiedata = base64_encode(serialize($cart_array));
+        
         // Update cookie
         $URL = "/ToggleHack/index.php";
-        // $cart_array[index][attribute] works until here
-        //var_dump($cart_array);
-        echo "<br>";
-        echo json_encode($cart_array);
-        //$jsonformat = json_encode($cart_array);
-        //var_dump($jsonformat);
-        //var_dump($cart_array, serialize($cart_array));
-        echo "<script type='text/javascript'>";
-        echo "var cart_array = [];";
-        /*foreach($cart_array as $item) {
-            echo "var new_item = new Array();";
-            echo "new_item[0] = " . $item[product_id] . ";";
-            echo "new_item[1] = '" . $item[product_name] . "';";
-            echo "new_item[2] = " . $item[product_price] . ";";
-            echo "new_item[3] = " . $item[product_amount] . ";";
-            //echo "var item = [" . $item[product_id] . ",'" . $item[product_name] . "'," . $item[product_price] . "," . $item[product_amount] . "];";
-            echo "cart_array.push([new_item]);";
-        }*/
-        //echo "var cart_array = JSON.Stringify(" . json_encode($cart_array) . ");";
-        
-        //echo "setCookie('cart_array', cart_array);";     
-        //echo "setCookie('cart_array', " . json_encode($cart_array) . ");";
-        //echo "document.location.href='{$URL}';</script>";
-        //echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
+        if  ($_SESSION['cookies'] == 'OFF') {
+            echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
+        }
+        else {
+            $_SESSION['cart_array'] = $cookiedata;
+        }
+        echo "<script>document.location.href='{$URL}';</script>";
+        echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
     }
 
        // unset
-    public function remove($itemid) {
-        $todo = "todo";
+    public function remove() {
+        $product_id = $_POST['product_id'];
+        $cart_array = unserialize(base64_decode($_COOKIE['cart_array']));
+        $len = count($cart_array);
+        for ($i = 0; $i < $len; $i++) {
+            if ($cart_array[$i]['product_id'] == $product_id) {
+                unset($cart_array[$i]);
+            }
+        }
+        $cookiedata = base64_encode(serialize($cart_array));
+        $URL = "/ToggleHack/index.php";
+        if ($_SESSION['cookies'] == 'OFF') { 
+            echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
+        }
+        else {
+            $_SESSION['cart_array'] = $cookiedata;
+        }
+        echo "<script>document.location.href='{$URL}';</script>";
+        echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
     }
 
     public function clearCart() {
         $URL = "/ToggleHack/index.php";
-        echo "<script type='text/javascript'>deleteCooke('cart_array');";
-        echo "document.location.href='{$URL}';</script>";
+        if ($_SESSION['cookies'] == 'OFF') {
+            echo "<script type='text/javascript'>deleteCookie('cart_array');</script>";
+        }
+        else {
+            unset($_SESSION['cart_array']);
+        }
+        echo "<script>document.location.href='{$URL}';</script>";
         echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
     }
 
     public function checkout() {
         // Get all items and redirect to some site.
-        $cart = $_COOKIE['cart_array'];
-        
+        $cart = unserialize(base64_decode($_COOKIE['cart_array']));
+        $tot_sum = 0;
+        foreach($cart as $cart_item) {
+            $tot_sum += $cart_item['product_amount']*$cart_item['product_price'];
+        }
+        require_once('views/pages/checkout.php');
     }
 }
 

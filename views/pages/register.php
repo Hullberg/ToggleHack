@@ -3,12 +3,12 @@
 	<div class="container">
 		<div class="row">
 			<div class="span3">
-
+                                <!--
 				<div class="well">
 					Measures
-					<!-- Will add toggle-buttons and info here -->
+					
 				</div>
-
+                                -->
 			</div>
 
 			<div class="span9" style="overflow-y: scroll">
