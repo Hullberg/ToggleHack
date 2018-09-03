@@ -1,33 +1,31 @@
 <?php
 class PagesController {
 	public function home() {
-		// Assign attributes for the view here
-		
-		$items = Item::all(); // An array with all items.
-
-		require_once('views/pages/home.php');
+            // Retrieves all items from the database
+            $items = Item::all(); // An array with all items.
+            require_once('views/pages/home.php');
 	}
 
 	public function search() {
-		$itemname = $_POST['Search'];
-		$items = Item::findname($itemname);
-		require_once('views/pages/home.php');
+            // Retrieves all items similar to search input
+            $itemname = $_POST['Search'];
+            $items = Item::findname($itemname);
+            require_once('views/pages/home.php');
 	}
         
         public function itempage() {
-            
             if (isset($_GET['itemid'])) {
-                $prod_id = $_GET['itemid'];
-                $item = Item::find($prod_id);
-                
+                $item_id = $_GET['itemid'];
+                $item = Item::find($item_id);
                 if ($item == NULL){
                     call('pages','error');
                 }
                 else {
-                    $comments = ItemComment::find($prod_id);
+                    $comments = ItemComment::find($item_id);
                     require_once('views/pages/itempage.php');
                 }
             } else {
+                // No item ID => No item page.
                 require_once('views/pages/error.php');
             }
         }
@@ -43,7 +41,7 @@ class PagesController {
                 $db = Db::getInstance();
                 $insert = $db->prepare('INSERT INTO itemcomments(product_id,comment) VALUES(:product_id,:comment)');
                 if($insert->execute(array(':product_id' => $product_id, ':comment' => $comment))) {
-                    // Insertion succeeded
+                    // Insertion succeeded, page refreshed to see new content
                     $URL = "/ToggleHack/index.php?controller=pages&action=itempage&itemid=$product_id";
                     echo "document.location.href='{$URL}';</script>";
                     echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
@@ -56,7 +54,6 @@ class PagesController {
 	}
 
 	public function error() {
-		// No variables, just error
 		require_once('views/pages/error.php');
 	}
         
@@ -81,6 +78,8 @@ class PagesController {
         }
         
         public function toggle_cookies() {
+            // Toggles between javascript cookies and $_SESSION-variables.
+            
             if ($_SESSION['cookies'] == 'OFF') {
                 $_SESSION['cookies'] = 'ON';
                 // Remove js-cookies and make them $_SESSION.
@@ -90,6 +89,7 @@ class PagesController {
                 $_SESSION['cart_array'] = $_COOKIE['cart_array'];
                 echo "<script type='text/javascript'>deleteCookie('cart_array');</script>";
                 
+                // Redirect to startpage.
                 $URL = "/ToggleHack/index.php";
                 echo "<script>document.location.href='{$URL}';</script>";
                 echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
@@ -102,6 +102,7 @@ class PagesController {
                 echo "<script type='text/javascript'>setCookie('cart_array','".$_SESSION['cart_array']."')</script>";
                 unset($_SESSION['cart_array']);
                 
+                // Redirect to startpage.
                 $URL = "/ToggleHack/index.php";
                 echo "<script>document.location.href='{$URL}';</script>";
                 echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
@@ -112,9 +113,9 @@ class PagesController {
         public function reset_site() {
             // Resets database to 'factory-settings'
             $db = Db::getInstance();
-            $db->query('DROP TABLE items');
-            $db->query('DROP TABLE itemcomments');
-            $db->query('DROP TABLE users');
+            $db->query('DROP TABLE IF EXISTS items');
+            $db->query('DROP TABLE IF EXISTS itemcomments');
+            $db->query('DROP TABLE IF EXISTS users');
             
             $db->query('CREATE TABLE items (
                         id INT NOT NULL AUTO_INCREMENT,

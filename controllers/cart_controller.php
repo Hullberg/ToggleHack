@@ -57,7 +57,7 @@ class CartController {
         echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
     }
 
-       // unset
+       
     public function remove() {
         $product_id = $_POST['product_id'];
         $cart_array = unserialize(base64_decode($_COOKIE['cart_array']));
@@ -92,7 +92,7 @@ class CartController {
     }
 
     public function checkout() {
-        // Get all items and redirect to some site.
+        // Get all items and redirect to checkout.
         $cart = unserialize(base64_decode($_COOKIE['cart_array']));
         $tot_sum = 0;
         foreach($cart as $cart_item) {

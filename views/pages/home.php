@@ -146,7 +146,8 @@
 
 			<div class="span9" style="overflow-y: scroll">
 				<ul class="thumbnails">
-					<?php // Check cart-controller
+					<?php /*
+                                                // Check cart-controller
 						foreach ($items as $item) {
 							echo <<<ITEMHTML
 							<li class='span3'>
@@ -167,6 +168,26 @@
 							</li>
 ITEMHTML;
 						}
+                                                */
+                                        foreach ($items as $item) {
+                                            echo <<<ITEMHTML
+                                            <li class='span3'>
+                                                <div class='thumbnail'>
+                                                    <a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item[0]'><img src='itemimage.jpg'></a>
+                                                    <div class='caption'>
+                                                        <h4><a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item[0]'>$item[1]</a></h4>
+                                                        <p>$item[2]</p>
+                                                        <p>$item[3]</p>
+                                                        <form method='POST' action='?controller=cart&action=add'>
+                                                            <input type='hidden' name='product_id' value=$item[0] />
+                                                            <input type='hidden' name='product_name' value=$item[1] />
+                                                            <input type='hidden' name='product_price' value=$item[2] />
+                                                            <input type='hidden' name='type' value='add_product' />
+                                                            <button class='btn btn-success'>Add to Cart</button>
+							</form>
+ITEMHTML;
+                                        }
+                                                
 					?>
 				</ul>
 			</div>
