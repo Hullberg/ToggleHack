@@ -38,7 +38,13 @@ class UsersController {
                                     $URL = "/ToggleHack/index.php";
                                     echo "<script type='text/javascript'>";
                                     if ($_SESSION['cookies'] == 'ON') {
-                                        $_SESSION['username'] = $username;
+                                        // Sign the cookie
+                                        $passphrase = "password";
+                                        $priv_key = openssl_get_privatekey(file_get_contents('private.pem'), $passphrase);
+                                        openssl_sign($user, $signature_user, $priv_key);
+                                        file_put_contents('signature_user.dat', $signature_user);
+                                        //$_SESSION['username'] = $username;
+                                        echo "setCookie('username' ," . $username . "');";
                                     } 
                                     else {
                                         echo "setCookie('username', '" . $username . "');";
@@ -59,8 +65,7 @@ class UsersController {
             $password = $_POST['loginpassword'];
             $pass1 = md5($password);
             
-            $sqlsuccess = false;
-            $sqllist = "This is what your query retrieved:\\n";
+            //$sqlsuccess = false;
             
             $db = Db::getInstance();
             // Bcrypt password can only be verified after retrieved from database.
@@ -73,18 +78,9 @@ class UsersController {
             } else {
                 $sql = "SELECT * FROM users WHERE username = '$username' AND md5pass = '$pass1'";
                 $response = $db->query($sql)->fetchAll();
-                if (count($response) > 1) {
-                    // SQL injection succeeded.
-                    $sqlsuccess = true;
-                    // Result in alert-popup below.
-                    foreach ($response as $row) {
-                        $sqllist .= "Username: " . $row['username'] . ", md5pass: " . $row['md5pass'] . ", bcryptpass: " . $row['bcryptpass'] . "\\n";
-                    }
-                }
-                else {
-                    $uname = $response[0]['username'];
-                    $pwordcheck = password_verify($password, $response[0]['bcryptpass']);
-                }
+                $uname = $response[0]['username'];
+                $pwordcheck = password_verify($password, $response[0]['bcryptpass']);
+                
             }
             
             if ($uname == $username && $pwordcheck) {
@@ -93,7 +89,12 @@ class UsersController {
                 $URL = "/ToggleHack/index.php";
                 echo "<script type='text/javascript'>";
                 if ($_SESSION['cookies'] == 'ON') {
-                    $_SESSION['username'] = $uname;
+                    // Sign cookie
+                    $passphrase = "password";
+                    $priv_key = openssl_get_privatekey(file_get_contents('private.pem'), $passphrase);
+                    openssl_sign($uname, $signature_user, $priv_key);
+                    file_put_contents('signature_user.dat', $signature_user);
+                    echo "setCookie('username','" . $uname . "');";
                 }
                 else {
                     echo "setCookie('username','" . $uname . "');";
@@ -103,14 +104,8 @@ class UsersController {
                 
             }
             else {
-                if ($sqlsuccess) {
-                    // Outputs the retrieved data from query.
-                    echo "<script type='text/javascript'>alert('".$sqllist."');</script>";
-                }
-                else {
-                    // Couldn't find user or wrongly typed
-                    echo "<script type='text/javascript'>alert('Wrong username or password');</script>";
-                }
+                // Couldn't find user or wrongly typed
+                echo "<script type='text/javascript'>alert('Wrong username or password');</script>";
                 call('pages','home');
             }
                         
@@ -119,12 +114,13 @@ class UsersController {
         public function logout() {
             $URL = "index.php";
             echo "<script type='text/javascript'>";
-            if($_SESSION['cookies'] == 'ON') {
-                unset($_SESSION['username']);
-            }
-            else {
+            /*if($_SESSION['cookies'] == 'ON') {
+                //unset($_SESSION['username']);
                 echo "deleteCookie('username');";
             }
+            else {*/
+                echo "deleteCookie('username');";
+            //}
             echo "document.location.href='{$URL}';</script>";
             echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
         }

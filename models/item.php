@@ -41,7 +41,8 @@ class Item {
             $db = Db::getInstance();
             $list = [];
             if ($_SESSION['sql'] == 'OFF') {
-                $sql = "SELECT * FROM items WHERE (name LIKE '%$itemname%' AND deletedAt IS NULL)";
+                //$sql = "SELECT * FROM items WHERE (name LIKE '%$itemname%' AND deletedAt IS NULL)";
+                $sql = "SELECT * FROM items WHERE (name LIKE '%$itemname%')";
                 $req = $db->query($sql);   
             }
             else {

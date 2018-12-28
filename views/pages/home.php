@@ -46,12 +46,8 @@
 							<i class="icon-shopping-cart"></i>
 							<!-- Add total sum here -->
                                                         <?php
-                                                        if($_SESSION['cookies'] == 'ON') {
-                                                            $c_temp = $_SESSION['cart_array'];
-                                                        }
-                                                        else {
-                                                            $c_temp = $_COOKIE['cart_array'];
-                                                        }
+                                                        $c_temp = $_COOKIE['cart_array'];
+                                                        
                                                         if(isset($c_temp)) {
                                                             $cart_array = unserialize(base64_decode($c_temp));
                                                             $tot_sum = 0;
@@ -69,12 +65,8 @@
 						<div class="dropdown-menu well" role="menu" aria-labelledby="dLabel">
 							<!-- Populate cart with items -->
 							<?php
-                                                        if($_SESSION['cookies'] == 'ON') {
-                                                            $c_temp = $_SESSION['cart_array'];
-                                                        }
-                                                        else {
-                                                            $c_temp = $_COOKIE['cart_array'];
-                                                        }
+                                                        $c_temp = $_COOKIE['cart_array'];
+                                                        
                                                         if(isset($c_temp)) {
                                                             $cart_array = unserialize(base64_decode($c_temp));
                                                             foreach($cart_array as $cart_item) {
@@ -100,12 +92,9 @@
 
 				<div class="well">
 					<?php 
-                                        if($_SESSION['cookies'] == 'ON') {
-                                            $c_temp = $_SESSION['username'];
-                                        }
-                                        else {
-                                            $c_temp = $_COOKIE['username'];
-                                        }
+                                        
+                                        $c_temp = $_COOKIE['username'];
+                                        
                                         //var_dump($c_temp);
                                         if (isset($c_temp)) {
                                             echo "<h3>Hello <script>document.write('$c_temp');</script></h3>";
@@ -146,29 +135,7 @@
 
 			<div class="span9" style="overflow-y: scroll">
 				<ul class="thumbnails">
-					<?php /*
-                                                // Check cart-controller
-						foreach ($items as $item) {
-							echo <<<ITEMHTML
-							<li class='span3'>
-								<div class='thumbnail'>
-									<a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item->id'><img src='itemimage.jpg' ></a>
-									<div class='caption'>
-										<h4><a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item->id'>$item->name</a></h4>
-										<p>$ $item->price</p>
-										<form method='POST' action='?controller=cart&action=add'>
-											<input type='hidden' name='product_id' value=$item->id />
-											<input type='hidden' name='product_name' value=$item->name />
-											<input type='hidden' name='product_price' value=$item->price />
-											<input type='hidden' name='type' value='add_product' />
-											<button class='btn btn-success'>Add to Cart</button>
-										</form>
-									</div>
-								</div>
-							</li>
-ITEMHTML;
-						}
-                                                */
+					<?php 
                                         foreach ($items as $item) {
                                             echo <<<ITEMHTML
                                             <li class='span3'>
@@ -176,7 +143,7 @@ ITEMHTML;
                                                     <a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item[0]'><img src='itemimage.jpg'></a>
                                                     <div class='caption'>
                                                         <h4><a href='http://localhost:8888/ToggleHack/index.php?controller=pages&action=itempage&itemid=$item[0]'>$item[1]</a></h4>
-                                                        <p>$item[2]</p>
+                                                        <p>$ $item[2]</p>
                                                         <p>$item[3]</p>
                                                         <form method='POST' action='?controller=cart&action=add'>
                                                             <input type='hidden' name='product_id' value=$item[0] />

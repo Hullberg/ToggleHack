@@ -7,10 +7,10 @@
 				<img src='itemimage.jpg' >
 				<div class='caption'>
                                     <?php
-                                        var_dump($item);
-                                        echo "<h3>" . $item->name . "<h3>";
-                                        echo "<h4>" . $item->price . "</h4>";
-                                        echo "<h5>" . $item->description . "</h5>";
+                                        //var_dump($item);
+                                        echo "<h3>" . $item[1] . "<h3>";
+                                        echo "<h4>$ " . $item[2] . "</h4>";
+                                        echo "<h5>" . $item[3] . "</h5>";
                                     ?>
 				</div>
                             </div>
@@ -40,7 +40,7 @@
                             <form method="POST" action="?controller=pages&action=addcomment">
                                 <input type="text" name="itemcomment" placeholder="Add your comment here" style="width:99%"><br>
                                 <?php
-                                    echo "<input type='hidden' name='product_id' value=" . $item[0]->id . ">";
+                                    echo "<input type='hidden' name='product_id' value=" . $item[0] . ">";
                                 ?>
                                 <button class='btn btn-success' style="float: right">Add comment</button>
                             </form>

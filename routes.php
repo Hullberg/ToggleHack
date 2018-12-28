@@ -26,7 +26,7 @@ function call($controller, $action) {
 }
 
 // Add the controllers with their actions
-$controllers = array('pages' => array('home', 'error', 'search', 'register', 'itempage', 'addcomment', 'toggle_sql', 'toggle_xss', 'toggle_cookies', 'reset_site'),
+$controllers = array('pages' => array('home', 'error', 'search', 'register', 'itempage', 'addcomment', 'toggle_sql', 'toggle_xss', 'toggle_cookies', 'reset_site', 'verifyCookies'),
                     'cart' => array('add', 'remove', 'clearCart', 'checkout'),
                     'users' => array('register', 'login', 'logout'));
 

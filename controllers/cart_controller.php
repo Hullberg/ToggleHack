@@ -16,13 +16,10 @@ class CartController {
           ),...
          */
         
-        if (isset($_COOKIE['cart_array']) || isset($_SESSION['cart_array'])) { // If empty, no items in cart.
-            if ($_SESSION['cookies'] == 'OFF') {
-                $cart_array = unserialize(base64_decode($_COOKIE['cart_array']));
-            }
-            else {
-                $cart_array = unserialize(base64_decode($_SESSION['cart_array']));
-            }
+        if (isset($_COOKIE['cart_array'])) { // If empty, no items in cart.
+            
+            $cart_array = unserialize(base64_decode($_COOKIE['cart_array']));
+            
             $tempindex = -1;
             $length = count($cart_array);
             for ($i = 0; $i < $length; $i++) {
@@ -51,7 +48,12 @@ class CartController {
             echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
         }
         else {
-            $_SESSION['cart_array'] = $cookiedata;
+            // Sign cookie
+            $passphrase = "password";
+            $priv_key = openssl_get_privatekey(file_get_contents('private.pem'), $passphrase);
+            openssl_sign($cookiedata, $signature_cart, $priv_key);
+            file_put_contents('signature_cart.dat', $signature_cart);
+            echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
         }
         echo "<script>document.location.href='{$URL}';</script>";
         echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
@@ -73,7 +75,12 @@ class CartController {
             echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
         }
         else {
-            $_SESSION['cart_array'] = $cookiedata;
+            // Sign cookie
+            $passphrase = "password";
+            $priv_key = openssl_get_privatekey(file_get_contents('private.pem'), $passphrase);
+            openssl_sign($cookiedata, $signature_cart, $priv_key);
+            file_put_contents('signature_cart.dat', $signature_cart);
+            echo "<script type='text/javascript'>setCookie('cart_array', '".$cookiedata."');</script>";
         }
         echo "<script>document.location.href='{$URL}';</script>";
         echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
@@ -81,12 +88,12 @@ class CartController {
 
     public function clearCart() {
         $URL = "/ToggleHack/index.php";
-        if ($_SESSION['cookies'] == 'OFF') {
+        /*if ($_SESSION['cookies'] == 'OFF') {
             echo "<script type='text/javascript'>deleteCookie('cart_array');</script>";
         }
-        else {
-            unset($_SESSION['cart_array']);
-        }
+        else {*/
+            echo "<script type='text/javascript'>deleteCookie('cart_array');</script>";
+        
         echo "<script>document.location.href='{$URL}';</script>";
         echo "<META HTTP-EQUIV='refresh' content='0;URL=" . $URL . "'>";
     }
